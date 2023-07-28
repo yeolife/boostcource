@@ -70,7 +70,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-389" y="-332"/>
+            <point key="canvasLocation" x="-321" y="-355"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="5Ke-u8-AOR">
@@ -86,50 +86,63 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7P9-4D-Fav" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1173" y="396"/>
+            <point key="canvasLocation" x="-1160" y="377"/>
         </scene>
-        <!--View Controller sign In-->
+        <!--View Controller add Info sign In-->
         <scene sceneID="KGR-li-4EW">
             <objects>
-                <viewController id="htg-nT-19I" customClass="ViewController_signIn" customModule="SignUp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="htg-nT-19I" customClass="ViewController_addInfo_signIn" customModule="SignUp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wDx-Lc-vPd">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uWj-8Y-cSh">
-                                <rect key="frame" x="20" y="140" width="353" height="216"/>
+                            <datePicker contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uWj-8Y-cSh">
+                                <rect key="frame" x="20" y="196" width="353" height="216"/>
                                 <date key="date" timeIntervalSinceReferenceDate="-3187312071.6409836">
                                     <!--1899-12-31 19:32:08 +0000-->
                                 </date>
                                 <locale key="locale" localeIdentifier="ko_KR"/>
                             </datePicker>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m7G-Mg-HGv">
-                                <rect key="frame" x="40" y="406" width="54" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m7G-Mg-HGv">
+                                <rect key="frame" x="50" y="446" width="54" height="35"/>
                                 <color key="tintColor" systemColor="systemRedColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="취소"/>
                                 <connections>
-                                    <action selector="dismiss_signUp" destination="htg-nT-19I" eventType="touchUpInside" id="esr-qY-Eou"/>
+                                    <action selector="dismiss_signUp" destination="htg-nT-19I" eventType="touchUpInside" id="5gs-LD-Li5"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hZY-cp-ug0">
-                                <rect key="frame" x="144" y="406" width="54" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hZY-cp-ug0">
+                                <rect key="frame" x="154" y="446" width="54" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="이전"/>
                                 <connections>
-                                    <action selector="popPrev_signUp" destination="htg-nT-19I" eventType="touchUpInside" id="ylN-Yi-R4c"/>
+                                    <action selector="popPrev_signUp" destination="htg-nT-19I" eventType="touchUpInside" id="rVv-Zv-oJj"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eNQ-UW-UTD">
-                                <rect key="frame" x="248" y="406" width="54" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eNQ-UW-UTD">
+                                <rect key="frame" x="258" y="446" width="54" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="가입"/>
+                                <connections>
+                                    <action selector="getUserInformation_signUp" destination="htg-nT-19I" eventType="touchUpInside" id="Hgl-9Y-b7Y"/>
+                                </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Phone Number" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fxR-oO-nRb">
-                                <rect key="frame" x="50.000000000000007" y="86" width="124.66666666666669" height="34"/>
+                                <rect key="frame" x="50" y="86" width="252" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="252" id="jv7-9e-342"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="생년월일" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8V5-xk-gCa">
+                                <rect key="frame" x="45" y="154" width="59" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="7xx-jb-kzi"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -151,7 +164,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d2q-Pd-EsN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="516.79389312977094" y="395.77464788732397"/>
+            <point key="canvasLocation" x="493.89312977099235" y="376.76056338028172"/>
         </scene>
         <!--View Controller sign In-->
         <scene sceneID="pcj-Bi-gT5">
@@ -161,23 +174,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="255" verticalHuggingPriority="255" verticalCompressionResistancePriority="752" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="11p-cW-8p7">
-                                <rect key="frame" x="161" y="78" width="170" height="34"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="255" verticalHuggingPriority="255" verticalCompressionResistancePriority="752" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="11p-cW-8p7">
+                                <rect key="frame" x="184" y="78" width="144" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="alphabet"/>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="255" verticalHuggingPriority="255" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PW" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="W5A-hD-VoP">
-                                <rect key="frame" x="161" y="120" width="170" height="34"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="255" verticalHuggingPriority="255" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PW" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="W5A-hD-VoP">
+                                <rect key="frame" x="184" y="120" width="144" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" keyboardType="alphabet"/>
+                                <textInputTraits key="textInputTraits" keyboardType="alphabet" secureTextEntry="YES" textContentType="new-password"/>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="255" verticalHuggingPriority="255" verticalCompressionResistancePriority="751" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PW 확인" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="O2b-sO-FvM">
-                                <rect key="frame" x="161" y="162" width="170" height="34"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="255" verticalHuggingPriority="255" verticalCompressionResistancePriority="751" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PW 확인" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="O2b-sO-FvM">
+                                <rect key="frame" x="184" y="162" width="144" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" keyboardType="alphabet"/>
+                                <textInputTraits key="textInputTraits" keyboardType="alphabet" secureTextEntry="YES" textContentType="new-password"/>
                             </textField>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hUT-6K-QU8">
-                                <rect key="frame" x="36" y="227" width="320" height="250"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="260" verticalHuggingPriority="260" image="photo.on.rectangle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Brc-z7-7jW">
+                                <rect key="frame" x="40" y="76.666666666666686" width="125" height="118"/>
+                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="125" id="Cem-N3-Gdz"/>
+                                    <constraint firstAttribute="height" constant="119.33" id="qmH-R0-gUh"/>
+                                </constraints>
+                            </imageView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hUT-6K-QU8">
+                                <rect key="frame" x="36" y="215.33333333333337" width="320" height="250"/>
                                 <color key="backgroundColor" systemColor="systemYellowColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="250" id="Frc-B8-Kdb"/>
@@ -186,33 +207,28 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="260" verticalHuggingPriority="260" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Brc-z7-7jW">
-                                <rect key="frame" x="28" y="78" width="125" height="118"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="125" id="Cem-N3-Gdz"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="guG-TP-LOR"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="O2b-sO-FvM" firstAttribute="leading" secondItem="Brc-z7-7jW" secondAttribute="trailing" constant="16" id="488-C2-xd9"/>
-                            <constraint firstItem="Brc-z7-7jW" firstAttribute="top" secondItem="guG-TP-LOR" secondAttribute="top" id="8RN-WR-PUk"/>
-                            <constraint firstAttribute="trailing" secondItem="O2b-sO-FvM" secondAttribute="trailing" constant="30" id="Aex-g5-lb9"/>
-                            <constraint firstItem="11p-cW-8p7" firstAttribute="top" secondItem="guG-TP-LOR" secondAttribute="top" id="Cod-a0-QEt"/>
-                            <constraint firstItem="hUT-6K-QU8" firstAttribute="top" secondItem="O2b-sO-FvM" secondAttribute="bottom" constant="5" id="F3u-m6-cX6"/>
+                            <constraint firstItem="Brc-z7-7jW" firstAttribute="top" secondItem="guG-TP-LOR" secondAttribute="top" constant="20" id="8RN-WR-PUk"/>
+                            <constraint firstAttribute="trailing" secondItem="O2b-sO-FvM" secondAttribute="trailing" constant="60" id="Aex-g5-lb9"/>
+                            <constraint firstItem="11p-cW-8p7" firstAttribute="top" secondItem="guG-TP-LOR" secondAttribute="top" constant="20" id="Cod-a0-QEt"/>
+                            <constraint firstItem="hUT-6K-QU8" firstAttribute="top" secondItem="O2b-sO-FvM" secondAttribute="bottom" constant="20" id="F3u-m6-cX6"/>
                             <constraint firstItem="O2b-sO-FvM" firstAttribute="top" secondItem="W5A-hD-VoP" secondAttribute="bottom" constant="8" symbolic="YES" id="FT2-DM-20J"/>
-                            <constraint firstItem="guG-TP-LOR" firstAttribute="trailing" secondItem="11p-cW-8p7" secondAttribute="trailing" constant="30" id="HDf-xc-hcE"/>
-                            <constraint firstItem="guG-TP-LOR" firstAttribute="trailing" secondItem="W5A-hD-VoP" secondAttribute="trailing" constant="30" id="HVR-Kr-8hW"/>
-                            <constraint firstItem="hUT-6K-QU8" firstAttribute="top" secondItem="Brc-z7-7jW" secondAttribute="bottom" constant="5" id="JxP-7V-Q0e"/>
+                            <constraint firstItem="guG-TP-LOR" firstAttribute="trailing" secondItem="11p-cW-8p7" secondAttribute="trailing" constant="60" id="HDf-xc-hcE"/>
+                            <constraint firstItem="guG-TP-LOR" firstAttribute="trailing" secondItem="W5A-hD-VoP" secondAttribute="trailing" constant="60" id="HVR-Kr-8hW"/>
+                            <constraint firstItem="hUT-6K-QU8" firstAttribute="top" secondItem="Brc-z7-7jW" secondAttribute="bottom" constant="20" id="JxP-7V-Q0e"/>
                             <constraint firstItem="W5A-hD-VoP" firstAttribute="leading" secondItem="Brc-z7-7jW" secondAttribute="trailing" constant="16" id="Q2A-yB-Aoz"/>
                             <constraint firstItem="hUT-6K-QU8" firstAttribute="leading" secondItem="guG-TP-LOR" secondAttribute="leading" constant="36" id="Syt-M3-pUo"/>
                             <constraint firstItem="W5A-hD-VoP" firstAttribute="top" secondItem="11p-cW-8p7" secondAttribute="bottom" constant="8" symbolic="YES" id="Xgv-I1-LR9"/>
-                            <constraint firstItem="Brc-z7-7jW" firstAttribute="leading" secondItem="guG-TP-LOR" secondAttribute="leading" constant="10" id="bk5-5b-fxG"/>
+                            <constraint firstItem="Brc-z7-7jW" firstAttribute="leading" secondItem="guG-TP-LOR" secondAttribute="leading" constant="40" id="bk5-5b-fxG"/>
                             <constraint firstItem="guG-TP-LOR" firstAttribute="trailing" secondItem="hUT-6K-QU8" secondAttribute="trailing" constant="37" id="gZz-Z0-jZp"/>
                             <constraint firstItem="11p-cW-8p7" firstAttribute="leading" secondItem="Brc-z7-7jW" secondAttribute="trailing" constant="16" id="hlm-bu-tHm"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="Cdc-pI-V2f">
                         <barButtonItem key="leftBarButtonItem" style="plain" id="FS5-2S-3pt" customClass="signUp_cancleBtn">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="2Ow-ct-Kg9">
@@ -222,36 +238,39 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="취소"/>
                                 <connections>
-                                    <action selector="dismiss_signUp" destination="cf8-nr-u1z" eventType="touchUpInside" id="QXa-w6-7Jx"/>
+                                    <action selector="dismiss_signIn" destination="cf8-nr-u1z" eventType="touchUpInside" id="tfX-Yc-6TX"/>
                                 </connections>
                             </button>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="nS9-WW-aMb" customClass="signUp_nextBtn">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nZI-sR-sY7">
-                                <rect key="frame" x="290" y="10.666666666666664" width="87" height="35"/>
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="qJM-LQ-XYu">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="avC-7C-0dT">
+                                <rect key="frame" x="302" y="10.666666666666664" width="75" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="다음"/>
                                 <connections>
-                                    <segue destination="htg-nT-19I" kind="show" id="sCT-eP-U27"/>
+                                    <segue destination="htg-nT-19I" kind="show" id="hLo-Iw-RUQ"/>
                                 </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="id_signUp" destination="11p-cW-8p7" id="dIV-eY-LjX"/>
-                        <outlet property="introduce_signUp" destination="hUT-6K-QU8" id="c6m-rs-3RN"/>
-                        <outlet property="nextBtn" destination="nZI-sR-sY7" id="fjV-IY-3En"/>
-                        <outlet property="pwCheck_signUp" destination="O2b-sO-FvM" id="Hla-V6-ADc"/>
-                        <outlet property="pw_signUp" destination="W5A-hD-VoP" id="peV-M6-mdh"/>
+                        <outlet property="id_TextField_signIn" destination="11p-cW-8p7" id="Lhh-BL-2uB"/>
+                        <outlet property="imageSelector_signIn" destination="Brc-z7-7jW" id="HTs-nc-AQ2"/>
+                        <outlet property="introduce_signIn" destination="hUT-6K-QU8" id="5yg-HX-PxT"/>
+                        <outlet property="nextBtn_signIn" destination="avC-7C-0dT" id="jCw-sV-lbz"/>
+                        <outlet property="pwCheck_TextField_signIn" destination="O2b-sO-FvM" id="Pck-TU-ewQ"/>
+                        <outlet property="pw_TextField_signIn" destination="W5A-hD-VoP" id="odx-EB-X8d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lsh-JB-o66" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-321.37404580152668" y="395.77464788732397"/>
+            <point key="canvasLocation" x="-321.37404580152668" y="376.76056338028172"/>
         </scene>
     </scenes>
     <resources>
+        <image name="photo.on.rectangle" catalog="system" width="128" height="98"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
@@ -260,6 +279,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

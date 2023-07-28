@@ -7,54 +7,86 @@
 
 import UIKit
 
-class ViewController_signIn: UIViewController, UITextFieldDelegate {
-    @IBOutlet weak var inputCheck_TextField_signUp: UITextField!
-    @IBOutlet weak var introduce_signUp: UITextView!
-    @IBOutlet weak var nextBtn: UIButton! {
+class ViewController_signIn: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    // MARK: - IBOutlet
+    
+    @IBOutlet weak var id_TextField_signIn: UITextField!
+    @IBOutlet weak var pw_TextField_signIn: UITextField!
+    @IBOutlet weak var pwCheck_TextField_signIn: UITextField!
+    @IBOutlet weak var introduce_signIn: UITextView!
+    @IBOutlet weak var imageSelector_signIn: UIImageView!
+    @IBOutlet weak var nextBtn_signIn: UIButton! {
         didSet {
-            nextBtn.isEnabled = false
+            nextBtn_signIn.isEnabled = false
         }
     }
+    
+    // MARK: - Function
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.inputCheck_TextField_signUp.delegate = self
+        self.id_TextField_signIn.delegate = self
+        self.pw_TextField_signIn.delegate = self
+        self.pwCheck_TextField_signIn.delegate = self
+        
+        imageSelector_signIn.layer.borderWidth = 0.5
+        imageSelector_signIn.layer.borderColor = UIColor.gray.cgColor
+        
+        self.imageSelector_signIn.isUserInteractionEnabled = true
+        self.imageSelector_signIn.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.touchUpSelectImageView(_:))))
     }
     
     // 회원가입 취소하기
-    @IBAction func dismiss_signUp() {
+    @IBAction func dismiss_signIn() {
         self.dismiss(animated: true, completion: nil)
     }
     
     // 텍스트 변경을 추적하여 빈칸 확인
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool{
-        if(range.location > 0) {
-            self.nextBtn.isEnabled = true
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        let isEmpty_id_TextField_signIn = !id_TextField_signIn.text!.isEmpty
+        let isEmpty_pw_TextField_signIn = !pw_TextField_signIn.text!.isEmpty
+        let isEmpty_pwCheck_TextField_signIn = !pwCheck_TextField_signIn.text!.isEmpty
+        
+        // 비밀번호 확인과 같은지 확인
+        if(isEmpty_id_TextField_signIn && isEmpty_pw_TextField_signIn && isEmpty_pwCheck_TextField_signIn) {
+            if(pw_TextField_signIn.text! == pwCheck_TextField_signIn.text!) {
+                nextBtn_signIn.isEnabled = true
+            }
+            else {
+                nextBtn_signIn.isEnabled = false
+            }
         }
         else {
-            self.nextBtn.isEnabled = false
+            nextBtn_signIn.isEnabled = false
         }
-        
-        return true
     }
     
+    // MARK: - Image Function
     
-    // 비밀번호가 같은지 확인
+    lazy var imagePicker: UIImagePickerController = {
+        let picker: UIImagePickerController = UIImagePickerController()
+        picker.sourceType = .photoLibrary
+        picker.allowsEditing = true
+        picker.delegate = self
+        return picker
+    }()
     
- 
-    
-    // 조건을 만족하면 버튼 활성화
-    
-    
-    
-    // 화원가입 중에 이전화면 돌아가기(부가정보 페이지 -> 필수정보 페이지)
-    @IBAction func popPrev_signUp() {
-        self.navigationController?.popViewController(animated: true)
+    @objc func touchUpSelectImageView(_ sender: UITapGestureRecognizer) {
+        print("이미지뷰 클릭!")
+        self.present(self.imagePicker, animated: true, completion: nil)
     }
     
-    // 회원가입 성공
-    @IBAction func getUserInformation_signUp() {
-        
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        print("피커 닫음!")
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let originalImage: UIImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            self.imageSelector_signIn.image = originalImage
+        }
+        self.dismiss(animated: true, completion: nil)
     }
 }
