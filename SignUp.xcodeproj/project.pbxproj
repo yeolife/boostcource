@@ -16,7 +16,6 @@
 		A06C54C72A6E2D5900E2AD3F /* userInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06C54C62A6E2D5900E2AD3F /* userInformation.swift */; };
 		A06C54CB2A6EDBEE00E2AD3F /* ViewController_signIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A06C54CA2A6EDBEE00E2AD3F /* ViewController_signIn.swift */; };
 		A0E3A4092A72224E00A8EFB1 /* ViewController_addInfo_signIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0E3A4072A72224E00A8EFB1 /* ViewController_addInfo_signIn.swift */; };
-		A0E3A40A2A72224E00A8EFB1 /* ViewController_addInfo_signIn.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0E3A4082A72224E00A8EFB1 /* ViewController_addInfo_signIn.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +30,6 @@
 		A06C54C62A6E2D5900E2AD3F /* userInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userInformation.swift; sourceTree = "<group>"; };
 		A06C54CA2A6EDBEE00E2AD3F /* ViewController_signIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController_signIn.swift; sourceTree = "<group>"; };
 		A0E3A4072A72224E00A8EFB1 /* ViewController_addInfo_signIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController_addInfo_signIn.swift; sourceTree = "<group>"; };
-		A0E3A4082A72224E00A8EFB1 /* ViewController_addInfo_signIn.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewController_addInfo_signIn.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +67,6 @@
 				A05DB3452A61D59F008753E2 /* ViewController.swift */,
 				A06C54CA2A6EDBEE00E2AD3F /* ViewController_signIn.swift */,
 				A0E3A4072A72224E00A8EFB1 /* ViewController_addInfo_signIn.swift */,
-				A0E3A4082A72224E00A8EFB1 /* ViewController_addInfo_signIn.xib */,
 				A05DB3472A61D59F008753E2 /* Main.storyboard */,
 				A06C54C62A6E2D5900E2AD3F /* userInformation.swift */,
 				A05DB34A2A61D59F008753E2 /* Assets.xcassets */,
@@ -137,7 +134,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A0E3A40A2A72224E00A8EFB1 /* ViewController_addInfo_signIn.xib in Resources */,
 				A05DB34E2A61D59F008753E2 /* LaunchScreen.storyboard in Resources */,
 				A05DB34B2A61D59F008753E2 /* Assets.xcassets in Resources */,
 				A05DB3492A61D59F008753E2 /* Main.storyboard in Resources */,

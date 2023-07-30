@@ -14,15 +14,17 @@ class ViewController_signIn: UIViewController, UITextFieldDelegate, UIImagePicke
     @IBOutlet weak var id_TextField_signIn: UITextField!
     @IBOutlet weak var pw_TextField_signIn: UITextField!
     @IBOutlet weak var pwCheck_TextField_signIn: UITextField!
-    @IBOutlet weak var introduce_signIn: UITextView!
+    @IBOutlet weak var introduce_signIn: UITextView?
     @IBOutlet weak var imageSelector_signIn: UIImageView!
+    let imagePickerController = UIImagePickerController()
     @IBOutlet weak var nextBtn_signIn: UIButton! {
         didSet {
             nextBtn_signIn.isEnabled = false
         }
     }
     
-    // MARK: - Function
+    
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +32,21 @@ class ViewController_signIn: UIViewController, UITextFieldDelegate, UIImagePicke
         self.id_TextField_signIn.delegate = self
         self.pw_TextField_signIn.delegate = self
         self.pwCheck_TextField_signIn.delegate = self
-        
+
         imageSelector_signIn.layer.borderWidth = 0.5
         imageSelector_signIn.layer.borderColor = UIColor.gray.cgColor
-        
         self.imageSelector_signIn.isUserInteractionEnabled = true
-        self.imageSelector_signIn.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.touchUpSelectImageView(_:))))
+        self.imageSelector_signIn.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ViewController_signIn.touchUpSelectImageView(_:))))
+        imageSelector_signIn.layer.masksToBounds = true
+        
+        self.imagePickerController.sourceType = .photoLibrary
+        self.imagePickerController.allowsEditing = true
+        self.imagePickerController.delegate = self
+        present(imagePickerController, animated: true, completion: nil)
     }
+    
+    
+    // MARK: - UI Function
     
     // 회원가입 취소하기
     @IBAction func dismiss_signIn() {
@@ -63,19 +73,12 @@ class ViewController_signIn: UIViewController, UITextFieldDelegate, UIImagePicke
         }
     }
     
-    // MARK: - Image Function
     
-    lazy var imagePicker: UIImagePickerController = {
-        let picker: UIImagePickerController = UIImagePickerController()
-        picker.sourceType = .photoLibrary
-        picker.allowsEditing = true
-        picker.delegate = self
-        return picker
-    }()
+    // MARK: - Image Function
     
     @objc func touchUpSelectImageView(_ sender: UITapGestureRecognizer) {
         print("이미지뷰 클릭!")
-        self.present(self.imagePicker, animated: true, completion: nil)
+        self.present(imagePickerController, animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -84,9 +87,18 @@ class ViewController_signIn: UIViewController, UITextFieldDelegate, UIImagePicke
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let originalImage: UIImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            self.imageSelector_signIn.image = originalImage
-        }
+  
+        let image = info[UIImagePickerController.InfoKey.editedImage] as! UIImage
+
+        // 이미지 선택 시 자르기
+//        let cropRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+//        let imageRef = image.cgImage!.cropping(to: cropRect);
+//        let newImage = UIImage(cgImage: imageRef!, scale: image.scale, orientation: image.imageOrientation)
+
+        imageSelector_signIn.image = image
+        
         self.dismiss(animated: true, completion: nil)
     }
+    
+    
 }
