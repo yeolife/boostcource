@@ -8,6 +8,9 @@
 import UIKit
 
 class TableViewCell_country: UITableViewCell {
+    
+    @IBOutlet weak var image_country: UIImageView!
+    @IBOutlet weak var name_country: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
