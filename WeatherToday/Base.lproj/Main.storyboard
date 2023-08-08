@@ -56,12 +56,13 @@
                                         <connections>
                                             <outlet property="image_country" destination="9Ep-xN-Ai9" id="lRF-I0-EKV"/>
                                             <outlet property="name_country" destination="LqB-DK-RCI" id="HX0-4d-fri"/>
-                                            <segue destination="pdL-cq-cHd" kind="show" id="R1U-Fm-9Y1"/>
+                                            <segue destination="pdL-cq-cHd" kind="show" id="Kg6-xH-m2g"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="8bC-Xf-vdC" id="PDB-Hh-gZV"/>
+                                    <outlet property="delegate" destination="8bC-Xf-vdC" id="aAH-l1-1XY"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -95,7 +96,7 @@
                                 <rect key="frame" x="0.0" y="103" width="393" height="715"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="132" id="60n-dm-69n">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cityCell" rowHeight="132" id="60n-dm-69n" customClass="TableViewCell_city" customModule="WeatherToday" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="393" height="132"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="60n-dm-69n" id="pGD-Ur-BNl">
@@ -154,8 +155,19 @@
                                                 <constraint firstItem="uED-42-b3j" firstAttribute="leading" secondItem="LhQ-Dg-fmx" secondAttribute="trailing" constant="16" id="rGF-SX-2N3"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="image_city" destination="LhQ-Dg-fmx" id="4nC-Cf-mqc"/>
+                                            <outlet property="name_city" destination="RI2-9D-EIF" id="yxr-hF-6Dm"/>
+                                            <outlet property="rainfall_probability_city" destination="uED-42-b3j" id="Qyj-yh-XyU"/>
+                                            <outlet property="temperature_city" destination="tsY-XB-4Sx" id="ra5-aR-hGR"/>
+                                            <segue destination="hNP-Kh-JWz" kind="show" id="oPd-l9-V2i"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="SkO-QZ-POt" id="Ze5-U6-hB3"/>
+                                    <outlet property="delegate" destination="SkO-QZ-POt" id="Web-fi-kaS"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="T3s-lQ-JsY"/>
@@ -168,6 +180,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="leK-E0-z8J"/>
+                    <connections>
+                        <outlet property="tableView_city" destination="Sjx-8Y-IBt" id="6H8-xy-hil"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tTI-L2-3gN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -182,14 +197,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JcL-3K-ArM">
-                                <rect key="frame" x="122" y="149" width="150" height="150"/>
+                                <rect key="frame" x="122" y="193" width="150" height="150"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="150" id="Kau-pz-xRu"/>
                                     <constraint firstAttribute="height" constant="150" id="lJA-uY-52O"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YZW-4k-9Fw">
-                                <rect key="frame" x="122" y="339" width="148" height="20.333333333333314"/>
+                                <rect key="frame" x="122" y="383" width="148" height="20.333333333333314"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="148" id="aEv-8x-RZM"/>
                                 </constraints>
@@ -198,7 +213,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H6j-j0-jKW">
-                                <rect key="frame" x="122" y="374.33333333333331" width="148" height="20.333333333333314"/>
+                                <rect key="frame" x="122" y="418.33333333333331" width="148" height="20.333333333333314"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="148" id="zQR-SC-hCr"/>
                                 </constraints>
@@ -207,7 +222,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fub-IO-HwN">
-                                <rect key="frame" x="121.99999999999999" y="59" width="41.333333333333329" height="40"/>
+                                <rect key="frame" x="122" y="103" width="148" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="150" id="1jn-Iu-J0B"/>
                                     <constraint firstAttribute="height" constant="40" id="Syd-ay-Dhm"/>
@@ -217,7 +232,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChH-w2-SXy">
-                                <rect key="frame" x="122" y="409.66666666666669" width="148" height="20.333333333333314"/>
+                                <rect key="frame" x="122" y="453.66666666666669" width="148" height="20.333333333333314"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="148" id="4AT-Or-H5f"/>
                                 </constraints>

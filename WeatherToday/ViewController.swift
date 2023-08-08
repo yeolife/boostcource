@@ -14,6 +14,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var tableView_country: UITableView!
     let countryCellIdentify: String = "countryCell"
     var countries: [country] = []
+    var selectCountry: String?
     
     
     // MARK: - viewDidLoad
@@ -34,6 +35,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         } catch {
             print(error.localizedDescription)
         }
+        
+        self.navigationItem.title = "세계 날씨"
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.backgroundColor = .systemBlue
     }
     
     
@@ -51,8 +56,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         cell.accessoryType = .disclosureIndicator
         cell.name_country?.text = countries.korean_name
-        cell.image_country?.image = UIImage(named: "flag_" + countries.asset_name)
+        cell.englishName_country = countries.asset_name
+        cell.image_country?.image = UIImage(named: "flag_" + cell.englishName_country)
         
         return cell
+    }
+    
+    
+    // MARK: - Segue
+    
+    // SecondViewController의 Label에 현재 cell 값 넣기
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+         // Get the new view controller using segue.destination.
+         // Pass the selected object to the new view controller.
+        
+        guard let nextViewController: ViewController_city = segue.destination as? ViewController_city else {
+            return
+        }
+        
+        guard let cell: TableViewCell_country = sender as? TableViewCell_country else {
+            return
+        }
+        
+        // prepare 과정이라서 뷰 요소는 메모리에 있지 않음, 그래서 직접 뷰 요소에 넣지 못하고 프로퍼티에 할당함
+        nextViewController.currentCountry = cell.englishName_country
+        nextViewController.currentCountryKorean = cell.name_country.text
     }
 }

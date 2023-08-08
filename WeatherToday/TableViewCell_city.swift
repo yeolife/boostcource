@@ -8,6 +8,11 @@
 import UIKit
 
 class TableViewCell_city: UITableViewCell {
+    
+    @IBOutlet weak var image_city: UIImageView!
+    @IBOutlet weak var name_city: UILabel!
+    @IBOutlet weak var temperature_city: UILabel!
+    @IBOutlet weak var rainfall_probability_city: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

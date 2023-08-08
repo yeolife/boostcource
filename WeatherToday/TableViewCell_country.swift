@@ -11,6 +11,7 @@ class TableViewCell_country: UITableViewCell {
     
     @IBOutlet weak var image_country: UIImageView!
     @IBOutlet weak var name_country: UILabel!
+    var englishName_country: String!
 
     override func awakeFromNib() {
         super.awakeFromNib()
