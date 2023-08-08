@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A0430AA72A825716006883F9 /* TableViewCell_country.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0430AA62A825716006883F9 /* TableViewCell_country.swift */; };
+		A0430AA92A82572E006883F9 /* TableViewCell_city.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0430AA82A82572E006883F9 /* TableViewCell_city.swift */; };
+		A0430AAB2A82578B006883F9 /* ViewController_city.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0430AAA2A82578B006883F9 /* ViewController_city.swift */; };
+		A0430AAD2A8257AD006883F9 /* ViewController_info.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0430AAC2A8257AD006883F9 /* ViewController_info.swift */; };
 		A072234F2A80206000FBA946 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A072234E2A80206000FBA946 /* AppDelegate.swift */; };
 		A07223512A80206000FBA946 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07223502A80206000FBA946 /* SceneDelegate.swift */; };
 		A07223532A80206000FBA946 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A07223522A80206000FBA946 /* ViewController.swift */; };
@@ -16,6 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A0430AA62A825716006883F9 /* TableViewCell_country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell_country.swift; sourceTree = "<group>"; };
+		A0430AA82A82572E006883F9 /* TableViewCell_city.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell_city.swift; sourceTree = "<group>"; };
+		A0430AAA2A82578B006883F9 /* ViewController_city.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController_city.swift; sourceTree = "<group>"; };
+		A0430AAC2A8257AD006883F9 /* ViewController_info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController_info.swift; sourceTree = "<group>"; };
 		A072234B2A80206000FBA946 /* WeatherToday.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherToday.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A072234E2A80206000FBA946 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A07223502A80206000FBA946 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,7 +67,11 @@
 				A072234E2A80206000FBA946 /* AppDelegate.swift */,
 				A07223502A80206000FBA946 /* SceneDelegate.swift */,
 				A07223522A80206000FBA946 /* ViewController.swift */,
+				A0430AAA2A82578B006883F9 /* ViewController_city.swift */,
+				A0430AAC2A8257AD006883F9 /* ViewController_info.swift */,
 				A07223542A80206000FBA946 /* Main.storyboard */,
+				A0430AA62A825716006883F9 /* TableViewCell_country.swift */,
+				A0430AA82A82572E006883F9 /* TableViewCell_city.swift */,
 				A07223572A80206100FBA946 /* Assets.xcassets */,
 				A07223592A80206100FBA946 /* LaunchScreen.storyboard */,
 				A072235C2A80206100FBA946 /* Info.plist */,
@@ -138,9 +150,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0430AA72A825716006883F9 /* TableViewCell_country.swift in Sources */,
+				A0430AAD2A8257AD006883F9 /* ViewController_info.swift in Sources */,
 				A07223532A80206000FBA946 /* ViewController.swift in Sources */,
 				A072234F2A80206000FBA946 /* AppDelegate.swift in Sources */,
+				A0430AA92A82572E006883F9 /* TableViewCell_city.swift in Sources */,
 				A07223512A80206000FBA946 /* SceneDelegate.swift in Sources */,
+				A0430AAB2A82578B006883F9 /* ViewController_city.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
