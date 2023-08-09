@@ -9,6 +9,7 @@ import UIKit
 
 class ViewController_info: UIViewController {
     
+    var get_name_currentCity: String!
     var get_state_currentCity: Int!
     var get_temperature_currentCity: String!
     var get_rainfall_probability_currentCity_string: String!
@@ -29,6 +30,10 @@ class ViewController_info: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationItem.title = get_name_currentCity
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.tintColor = UIColor.white
 
         if(get_rainfall_probability_currentCity_int >= 50 && get_rainfall_probability_currentCity_int < 80) {
             rainfall_currentCity.textColor = .orange

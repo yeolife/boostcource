@@ -57,6 +57,7 @@ class ViewController_city: UIViewController, UITableViewDelegate, UITableViewDat
             return
         }
         
+        nextViewController.get_name_currentCity = cell.name_city.text
         nextViewController.get_state_currentCity = cell.state_city
         nextViewController.get_temperature_currentCity = cell.temperature_city.text
         nextViewController.get_rainfall_probability_currentCity_string = cell.rainfall_city.text
