@@ -42,6 +42,27 @@ class ViewController_city: UIViewController, UITableViewDelegate, UITableViewDat
         self.navigationController?.navigationBar.tintColor = UIColor.white
     }
     
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+        
+        guard let nextViewController: ViewController_info = segue.destination as? ViewController_info else {
+            return
+        }
+        
+        guard let cell: TableViewCell_city = sender as? TableViewCell_city else {
+            return
+        }
+        
+        nextViewController.get_state_currentCity = cell.state_city
+        nextViewController.get_temperature_currentCity = cell.temperature_city.text
+        nextViewController.get_rainfall_probability_currentCity_string = cell.rainfall_city.text
+        nextViewController.get_rainfall_probability_currentCity_int = cell.rainfall_probability_city
+    }
+    
     
     // MARK: - 테이블 뷰
     
@@ -56,13 +77,17 @@ class ViewController_city: UIViewController, UITableViewDelegate, UITableViewDat
         let cities: city = self.cities[indexPath.row]
         
         cell.accessoryType = .disclosureIndicator
+        
+        cell.state_city = cities.state
         cell.image_city.image = UIImage(named: cityWeather(state: cities.state))
         cell.name_city.text = cities.city_name
         cell.temperature_city.text = cities.celsiusAndFahrenheit
-        cell.rainfall_probability_city.text = cities.rainfall
+        cell.rainfall_probability_city = cities.rainfall_probability
+        cell.rainfall_city.text = cities.rainfall_probability_string
         
         return cell
     }
+    
     
     // MARK: - Function
     

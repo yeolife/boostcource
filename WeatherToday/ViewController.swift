@@ -55,6 +55,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let countries: country = self.countries[indexPath.row]
         
         cell.accessoryType = .disclosureIndicator
+        
         cell.name_country?.text = countries.korean_name
         cell.englishName_country = countries.asset_name
         cell.image_country?.image = UIImage(named: "flag_" + cell.englishName_country)

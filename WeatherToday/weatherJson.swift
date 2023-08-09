@@ -18,14 +18,13 @@ struct city: Codable {
     let city_name: String
     let state: Int
     let celsius: Float
-    let rainfall_probability: Int
-    
     var celsiusAndFahrenheit: String {
         var fahrenheit: Float
         fahrenheit = (self.celsius * 1.8) + 32
-        return "섭씨 \(self.celsius)도 / 화씨 \(fahrenheit)도"
+        return "섭씨 \(self.celsius)도 / 화씨 \(String(format: "%.1f" ,fahrenheit))도"
     }
-    var rainfall: String {
+    let rainfall_probability: Int
+    var rainfall_probability_string: String {
         return "강수확률 \(self.rainfall_probability)%"
     }
 }
