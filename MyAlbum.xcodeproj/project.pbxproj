@@ -13,6 +13,9 @@
 		A024B24F2A85851C00DE9639 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A024B24D2A85851C00DE9639 /* Main.storyboard */; };
 		A024B2512A85851D00DE9639 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A024B2502A85851D00DE9639 /* Assets.xcassets */; };
 		A024B2542A85851D00DE9639 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A024B2522A85851D00DE9639 /* LaunchScreen.storyboard */; };
+		A024B25C2A86CFF000DE9639 /* albumCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024B25B2A86CFF000DE9639 /* albumCollectionViewCell.swift */; };
+		A024B25E2A86D9CF00DE9639 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024B25D2A86D9CF00DE9639 /* StartViewController.swift */; };
+		A024B2602A86F13100DE9639 /* photoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A024B25F2A86F13100DE9639 /* photoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		A024B2502A85851D00DE9639 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A024B2532A85851D00DE9639 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A024B2552A85851D00DE9639 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A024B25B2A86CFF000DE9639 /* albumCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = albumCollectionViewCell.swift; sourceTree = "<group>"; };
+		A024B25D2A86D9CF00DE9639 /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		A024B25F2A86F13100DE9639 /* photoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = photoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +64,10 @@
 			children = (
 				A024B2472A85851C00DE9639 /* AppDelegate.swift */,
 				A024B2492A85851C00DE9639 /* SceneDelegate.swift */,
+				A024B25D2A86D9CF00DE9639 /* StartViewController.swift */,
 				A024B24B2A85851C00DE9639 /* ViewController.swift */,
+				A024B25F2A86F13100DE9639 /* photoViewController.swift */,
+				A024B25B2A86CFF000DE9639 /* albumCollectionViewCell.swift */,
 				A024B24D2A85851C00DE9639 /* Main.storyboard */,
 				A024B2502A85851D00DE9639 /* Assets.xcassets */,
 				A024B2522A85851D00DE9639 /* LaunchScreen.storyboard */,
@@ -138,6 +147,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A024B25E2A86D9CF00DE9639 /* StartViewController.swift in Sources */,
+				A024B2602A86F13100DE9639 /* photoViewController.swift in Sources */,
+				A024B25C2A86CFF000DE9639 /* albumCollectionViewCell.swift in Sources */,
 				A024B24C2A85851C00DE9639 /* ViewController.swift in Sources */,
 				A024B2482A85851C00DE9639 /* AppDelegate.swift in Sources */,
 				A024B24A2A85851C00DE9639 /* SceneDelegate.swift in Sources */,
@@ -289,6 +301,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyAlbum/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyAlbum;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -316,6 +329,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyAlbum/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyAlbum;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
