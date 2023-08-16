@@ -8,14 +8,16 @@
 import UIKit
 import Photos
 
+
+
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // MARK: - 변수
     
     // 뷰 관련
-    let cellIdentifier_album: String = "cell"
     var prefixSum: [Int] = [0, ] // 다음 뷰로 넘길 셀의 위치를 반환
     private var allAlbums = [PHFetchResult<PHAssetCollection>]()
+    let cellIdentifier_album: String = "cell"
     
     // 앨범 관련
     var albumType: Int = 0
@@ -100,12 +102,31 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return hi
     }
     
+    /* 2차원 앨범 셀의 row 찾기 */
+    // 누적합 배열에서 현재 순번의 upperBound를 찾으면 됨
+    // 찾은 후에 누적합 배열은 1번 인덱스부터 시작하므로 -1
+    func albumRow(index: Int) -> Int {
+        let row: Int = upperBounds(target: index) - 1
+        
+        return row
+    }
+    
+    /* 2차원 앨범 셀의 col 찾기 */
+    // 현재 1차원 순번에 이전 원소들의 합을 빼면 2차원 col을 알 수 있음
+    // col = 현재 셀 순번 - 이전 원소 누적합
+    func albumCol(index: Int, row: Int) -> Int {
+        let col: Int = index - prefixSum[row]
+        
+        return col
+    }
+    
     
     // MARK: - 사진
     
     func requestCollection() {
         // 스마트 앨범 (최근, 좋아요)
         let albumTypes: [PHAssetCollectionSubtype] = [.smartAlbumUserLibrary, .smartAlbumFavorites]
+        
         for i in 0..<albumTypes.count {
             let smartAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: albumTypes[i], options: nil)
             allAlbums.append(smartAlbum)
@@ -145,6 +166,16 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     
     // MARK: - 컬렉션 뷰
+    
+    // 해상도에 따른 행의 수 (기준: 아이폰se의 width)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let itemsPerRow: CGFloat = (photoInfo.shared.screenWidth - 30) / 172
+        let widthPadding = 10 * (itemsPerRow + 1)
+        let cellWidth = (photoInfo.shared.screenWidth - widthPadding) / itemsPerRow
+                        
+        return CGSize(width: cellWidth, height: cellWidth + 40)
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         for i in 1...allAlbums.count {
             prefixSum.append(prefixSum[i-1] + allAlbums[i-1].count)
@@ -189,7 +220,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 //            cell.label_albumCount.text = "\(photoInAlbum.count)"
 //        }
         
-        cell.update(title: allAlbum.localizedTitle!, count: photoInAlbums.count, image: resultFirstPhoto)
+        photoInfo.shared.indexAndSortStatus.updateValue(false, forKey: indexPath.item)
+        cell.updateText(title: allAlbum.localizedTitle!, count: photoInAlbums.count)
+        cell.updateImage(image: resultFirstPhoto)
         
         albumCnt += 1
         
@@ -197,17 +230,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             albumType += 1
             albumCnt = 0
         }
-        
+                
         return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // 해상도에 따른 행의 수 (기준: 아이폰se의 width)
-        let itemsPerRow: CGFloat = (photoInfo.shared.screenWidth - 30) / 172
-        let widthPadding = 10 * (itemsPerRow + 1)
-        let cellWidth = (photoInfo.shared.screenWidth - widthPadding) / itemsPerRow
-                        
-        return CGSize(width: cellWidth, height: cellWidth + 40)
     }
     
     
@@ -230,23 +254,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return
         }
         
-        /* 2차원 앨범 셀의 row 찾기 */
-        // 누적합 배열에서 현재 순번의 upperBound를 찾으면 됨
-        // 찾은 후에 누적합 배열은 1번 인덱스부터 시작하므로 -1
-        let albumRow = upperBounds(target: index.item) - 1
+        let albumRow = albumRow(index: index.item)
+        let albumCol = albumCol(index: index.item, row: albumRow)
         
-        /* 2차원 앨범 셀의 col 찾기 */
-        // 현재 1차원 순번에 이전 원소들의 합을 빼면 2차원 col을 알 수 있음
-        // col = 현재 셀 순번 - 이전 원소 누적합
-        let albumCol = index.item - prefixSum[albumRow]
-        
-        let sortDate = PHFetchOptions()
-        sortDate.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        
-        let photoInAlbums = PHAsset.fetchAssets(in: allAlbums[albumRow][albumCol], options: sortDate)
-        
-        nextViewController.selectedTitle = allAlbums[albumRow][albumCol].localizedTitle! // 앨범 제목
-        nextViewController.selectedPhotos = photoInAlbums // 앨범의 사진들
+        nextViewController.albumIndex = index.item
+        nextViewController.albumInCollection = allAlbums[albumRow][albumCol]
+        nextViewController.albumInTitle = allAlbums[albumRow][albumCol].localizedTitle ?? "" // 앨범 제목
     }
 }
 

@@ -13,8 +13,11 @@ import Photos
 class photoInfo{
     static let shared: photoInfo = photoInfo()
     
+    var indexAndSortStatus: [Int : Bool] = [:] // 앨범마다 정렬 상태 저장
+    
     let imageManager: PHCachingImageManager = PHCachingImageManager()
     var options = PHImageRequestOptions()
+    
     let screenWidth: CGFloat = { // 절대적인 화면 너비값 (회전 상태에서 앱 실행시 너비와 높이가 바뀌는 것을 방지)
         let screenSize = UIScreen.main.bounds.size
         let windowScene = UIApplication.shared.connectedScenes.first as! UIWindowScene

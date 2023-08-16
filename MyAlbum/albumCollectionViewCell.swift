@@ -12,9 +12,12 @@ class albumCollectionViewCell: UICollectionViewCell {
     @IBOutlet var label_albumName: UILabel!
     @IBOutlet var label_albumCount: UILabel!
     
-    func update(title: String, count: Int, image: UIImage) {
+    func updateText(title: String, count: Int) {
         self.label_albumName.text = title
         self.label_albumCount.text = "\(count)"
+    }
+    
+    func updateImage(image: UIImage) {
         self.imageView_album.image = image
     }
 }
