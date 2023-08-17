@@ -8,32 +8,25 @@
 import UIKit
 import Photos
 
-
-
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    // MARK: - 변수
-    
-    // 뷰 관련
-    var prefixSum: [Int] = [0, ] // 다음 뷰로 넘길 셀의 위치를 반환
+    // MARK: - 클래스 변수
+
     private var allAlbums = [PHFetchResult<PHAssetCollection>]()
     let cellIdentifier_album: String = "cell"
-    
-    // 앨범 관련
-    var albumType: Int = 0
-    var albumCnt: Int = 0
-    
-    
-    // MARK: - IB
-    
     @IBOutlet weak var collectionView_album: UICollectionView!
     
+    // 앨범의 순번
+    var albumType: Int = 0 // row
+    var albumCnt: Int = 0 // col
+    var prefixSum: [Int] = [0, ] // 다음 뷰로 넘길 셀의 위치(indexPath.item)를 반환
     
-    // MARK: - 뷰
+
+    // MARK: - UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         self.collectionView_album.delegate = self
         self.collectionView_album.dataSource = self
         
@@ -121,8 +114,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     
-    // MARK: - 사진
+    // MARK: - 앨범 및 권한
     
+    // 앨범 종류
     func requestCollection() {
         // 스마트 앨범 (최근, 좋아요)
         let albumTypes: [PHAssetCollectionSubtype] = [.smartAlbumUserLibrary, .smartAlbumFavorites]
@@ -167,7 +161,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     // MARK: - 컬렉션 뷰
     
-    // 해상도에 따른 행의 수 (기준: 아이폰se의 width)
+    // 셀 크기 (기준: 아이폰se의 width)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemsPerRow: CGFloat = (photoInfo.shared.screenWidth - 30) / 172
         let widthPadding = 10 * (itemsPerRow + 1)
@@ -176,6 +170,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return CGSize(width: cellWidth, height: cellWidth + 40)
     }
     
+    // 셀 개수
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         for i in 1...allAlbums.count {
             prefixSum.append(prefixSum[i-1] + allAlbums[i-1].count)
@@ -184,6 +179,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return prefixSum[allAlbums.count]
     }
     
+    // 셀 내용
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: self.cellIdentifier_album,
@@ -220,7 +216,6 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 //            cell.label_albumCount.text = "\(photoInAlbum.count)"
 //        }
         
-        photoInfo.shared.indexAndSortStatus.updateValue(false, forKey: indexPath.item)
         cell.updateText(title: allAlbum.localizedTitle!, count: photoInAlbums.count)
         cell.updateImage(image: resultFirstPhoto)
         

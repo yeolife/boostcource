@@ -13,8 +13,6 @@ import Photos
 class photoInfo{
     static let shared: photoInfo = photoInfo()
     
-    var indexAndSortStatus: [Int : Bool] = [:] // 앨범마다 정렬 상태 저장
-    
     let imageManager: PHCachingImageManager = PHCachingImageManager()
     var options = PHImageRequestOptions()
     
