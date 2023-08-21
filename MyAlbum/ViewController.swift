@@ -8,12 +8,12 @@
 import UIKit
 import Photos
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, reloadDelegate {
+
     // MARK: - 클래스 변수
 
-    private var allAlbums = [PHFetchResult<PHAssetCollection>]()
     let cellIdentifier_album: String = "cell"
+    private var allAlbums = [PHFetchResult<PHAssetCollection>]()
     @IBOutlet weak var collectionView_album: UICollectionView!
     
     // 앨범의 순번
@@ -72,8 +72,18 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
+    // 앨범 내의 사진에 관한 delegate
+    func reloadView(msg: String) {
+        OperationQueue.main.addOperation {
+            self.requestCollection()
+            self.collectionView_album.reloadSections(IndexSet(0...0))
+        }
+        
+        print(msg)
+    }
     
-    // MARK: - 함수
+    
+    // MARK: - PHFetchResult 안에서 앨범의 순번을 찾기 위한 함수들
     
     func upperBounds(target: Int) -> Int {
         var lo: Int = 0
@@ -114,20 +124,18 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     
-    // MARK: - 앨범 및 권한
+    // MARK: - 앨범의 전처리 및 권한 재확인
     
     // 앨범 종류
     func requestCollection() {
-        // 스마트 앨범 (최근, 좋아요)
-        let albumTypes: [PHAssetCollectionSubtype] = [.smartAlbumUserLibrary, .smartAlbumFavorites]
+        let albumTypes: [PHAssetCollectionSubtype] = [.smartAlbumUserLibrary, .smartAlbumFavorites] // 스마트 앨범 (최근, 좋아요)
         
         for i in 0..<albumTypes.count {
             let smartAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: albumTypes[i], options: nil)
             allAlbums.append(smartAlbum)
         }
         
-        // 유저의 모든 앨범
-        allAlbums.append(PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil))
+        allAlbums.append(PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)) // 유저의 모든 앨범
     }
     
     
@@ -241,6 +249,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return
         }
         
+        nextViewController.photoViewDelegate = self
+        
         guard let cell: UICollectionViewCell = sender as? UICollectionViewCell else {
             return
         }
@@ -257,4 +267,3 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         nextViewController.albumInTitle = allAlbums[albumRow][albumCol].localizedTitle ?? "" // 앨범 제목
     }
 }
-

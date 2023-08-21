@@ -129,7 +129,7 @@
         <!--Photo View Controller-->
         <scene sceneID="9UQ-8Y-vqY">
             <objects>
-                <viewController id="OFf-gW-pCw" customClass="photoViewController" customModule="MyAlbum" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="photoViewController" id="OFf-gW-pCw" customClass="photoViewController" customModule="MyAlbum" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hJt-WO-d3L">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -144,7 +144,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="tXa-QE-wEw" customClass="photosCollectionViewCell" customModule="MyAlbum" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="tXa-QE-wEw" customClass="photoCollectionViewCell" customModule="MyAlbum" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Xmp-Aw-qMJ">
@@ -166,7 +166,7 @@
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <connections>
-                                            <outlet property="imageView_photo" destination="FSP-xy-1lP" id="MKF-zP-Fnw"/>
+                                            <outlet property="imageView_photo" destination="FSP-xy-1lP" id="Oza-l1-KKN"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
