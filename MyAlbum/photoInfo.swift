@@ -15,6 +15,11 @@ class photoInfo{
     
     let imageManager: PHCachingImageManager = PHCachingImageManager()
     var options = PHImageRequestOptions()
+    let sortOption = PHFetchOptions()
+    
+    func sortDate(state: Bool) {
+        sortOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: state)] // 날짜 순 정렬
+    }
     
     let screenWidth: CGFloat = { // 절대적인 화면 너비값 (회전 상태에서 앱 실행시 너비와 높이가 바뀌는 것을 방지)
         let screenSize = UIScreen.main.bounds.size

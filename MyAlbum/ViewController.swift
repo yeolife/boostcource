@@ -8,37 +8,54 @@
 import UIKit
 import Photos
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, reloadDelegate {
-
-    // MARK: - 클래스 변수
-
-    let cellIdentifier_album: String = "cell"
+class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, reloadDelegate {
+    
     private var allAlbums = [PHFetchResult<PHAssetCollection>]()
+    
     @IBOutlet weak var collectionView_album: UICollectionView!
     
-    // 앨범의 순번
-    var albumType: Int = 0 // row
-    var albumCnt: Int = 0 // col
-    var prefixSum: [Int] = [0, ] // 다음 뷰로 넘길 셀의 위치(indexPath.item)를 반환
+    let cellIdentifier_album: String = "cell"
     
-
+    
+    // -----------------------------------------
     // MARK: - UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
                 
         self.collectionView_album.delegate = self
-        self.collectionView_album.dataSource = self
         
-        // flowLayout
-        let flowLayout: UICollectionViewFlowLayout
-        flowLayout = UICollectionViewFlowLayout()
+        setupLayout()
+        
+        checkAuthorization()
+        
+        setupAlbums()
+        
+        setupAlbumIndexArray()
+        
+        setupDataSource()
+        
+        setupSnapshot()
+    }
+    
+    
+    func setupLayout() {
+        let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+
         flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         flowLayout.minimumLineSpacing = 10
         flowLayout.minimumInteritemSpacing = 10
-        self.collectionView_album.collectionViewLayout = flowLayout
         
-        // 갤러리 접근 권한
+        self.collectionView_album.collectionViewLayout = flowLayout
+    }
+    
+    
+    // -----------------------------------------
+    // MARK: - 앨범의 전처리 및 권한 재확인
+    
+    
+    // 1. 권한 확인
+    func checkAuthorization() {
         let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
         
         switch photoAuthorizationStatus {
@@ -72,74 +89,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
-    // 앨범 내의 사진에 관한 delegate
-    func reloadView(msg: String) {
-        OperationQueue.main.addOperation {
-            self.requestCollection()
-            self.collectionView_album.reloadSections(IndexSet(0...0))
-        }
-        
-        print(msg)
-    }
     
-    
-    // MARK: - PHFetchResult 안에서 앨범의 순번을 찾기 위한 함수들
-    
-    func upperBounds(target: Int) -> Int {
-        var lo: Int = 0
-        var hi: Int = prefixSum.count
-        
-        var mid: Int
-        
-        while(lo + 1 < hi) {
-            mid = (lo + hi) / 2
-            
-            if(prefixSum[mid] <= target) {
-                lo = mid
-            }
-            else {
-                hi = mid
-            }
-        }
-        
-        return hi
-    }
-    
-    /* 2차원 앨범 셀의 row 찾기 */
-    // 누적합 배열에서 현재 순번의 upperBound를 찾으면 됨
-    // 찾은 후에 누적합 배열은 1번 인덱스부터 시작하므로 -1
-    func albumRow(index: Int) -> Int {
-        let row: Int = upperBounds(target: index) - 1
-        
-        return row
-    }
-    
-    /* 2차원 앨범 셀의 col 찾기 */
-    // 현재 1차원 순번에 이전 원소들의 합을 빼면 2차원 col을 알 수 있음
-    // col = 현재 셀 순번 - 이전 원소 누적합
-    func albumCol(index: Int, row: Int) -> Int {
-        let col: Int = index - prefixSum[row]
-        
-        return col
-    }
-    
-    
-    // MARK: - 앨범의 전처리 및 권한 재확인
-    
-    // 앨범 종류
-    func requestCollection() {
-        let albumTypes: [PHAssetCollectionSubtype] = [.smartAlbumUserLibrary, .smartAlbumFavorites] // 스마트 앨범 (최근, 좋아요)
-        
-        for i in 0..<albumTypes.count {
-            let smartAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: albumTypes[i], options: nil)
-            allAlbums.append(smartAlbum)
-        }
-        
-        allAlbums.append(PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)) // 유저의 모든 앨범
-    }
-    
-    
-    // 접근권한 거부상태일 때 띄우는 알림창
+    // 1-1. 접근권한 거부상태일 때 띄우는 알림창
     func showAlertAuth(_ type: String) {
         if let appName = Bundle.main.infoDictionary!["CFBundleDisplayName"] as? String {
             
@@ -167,7 +118,183 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     }
     
     
+    // 2. 앨범 종류 선정
+    func requestCollection() {
+        let smartAlbumType: [PHAssetCollectionSubtype] = [.smartAlbumUserLibrary, .smartAlbumFavorites] // 스마트 앨범 (최근, 좋아요)
+        
+        for i in 0..<smartAlbumType.count {
+            let smartAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: smartAlbumType[i], options: nil)
+            allAlbums.append(smartAlbum)
+        }
+        
+        allAlbums.append(PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)) // 유저의 모든 앨범
+    }
+    
+    
+    // 3. 선정한 앨범 컬렉션의 정보를 전처리
+    func setupAlbums() {
+        // 1. PHFetchResult<PHAssetCollection> in [PHFetchResult<PHAssetCollection>]
+        for allAlbum in allAlbums {
+            
+            // 2. PHAssetCollection in PHFetchResult<PHAssetCollection>
+            allAlbum.enumerateObjects { album, _, _ in
+                
+                photoInfo.shared.sortDate(state: false)
+                
+                // 3. PHFetchResult<PHAsset> in PHAssetCollection
+                let collectionInAlbum = PHAsset.fetchAssets(in: album, options: photoInfo.shared.sortOption)
+                
+                if(collectionInAlbum.firstObject != nil) {
+                    
+                    // 4. PHAsset in PHFetchResult<PHAsset>
+                    guard let firstPhoto = collectionInAlbum.firstObject else {
+                        return
+                    }
+                    
+                    self.albumsInfo.append(Item(albumTitle: album.localizedTitle ?? "",
+                                                thumbnailAsset: firstPhoto,
+                                                photoCount: collectionInAlbum.count))
+                }
+            }
+        }
+    }
+    
+    
+    // -----------------------------------------
+    // MARK: - PHFetchResult 안에서 앨범의 순번을 찾기 위한 함수들
+    
+    var albumType: Int = 0 // row
+    var albumCnt: Int = 0 // col
+    var prefixSum: [Int] = [0, ] // 다음 뷰로 넘길 셀의 위치(indexPath.item)를 반환
+    
+    
+    func setupAlbumIndexArray() {
+        for i in 1...allAlbums.count {
+            prefixSum.append(prefixSum[i-1] + allAlbums[i-1].count)
+        }
+    }
+    
+    
+    /* 2차원 앨범 셀의 row 찾기 */
+    // 누적합 배열에서 현재 순번의 upperBound를 찾으면 됨
+    // 찾은 후에 누적합 배열은 1번 인덱스부터 시작하므로 -1
+    func albumRow(index: Int) -> Int {
+        let row: Int = upperBounds(target: index) - 1
+        
+        return row
+    }
+    
+    /* 2차원 앨범 셀의 col 찾기 */
+    // 현재 1차원 순번에 이전 원소들의 합을 빼면 2차원 col을 알 수 있음
+    // col = 현재 셀 순번 - 이전 원소 누적합
+    func albumCol(index: Int, row: Int) -> Int {
+        let col: Int = index - prefixSum[row]
+        
+        return col
+    }
+    
+    
+    func upperBounds(target: Int) -> Int {
+        var lo: Int = 0
+        var hi: Int = prefixSum.count
+        
+        var mid: Int
+        
+        while(lo + 1 < hi) {
+            mid = (lo + hi) / 2
+            
+            if(prefixSum[mid] <= target) {
+                lo = mid
+            }
+            else {
+                hi = mid
+            }
+        }
+        
+        return hi
+    }
+
+    
+    // -----------------------------------------
     // MARK: - 컬렉션 뷰
+    
+    var albumsInfo: [Item] = []
+    var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
+
+    
+    enum Section: CaseIterable {
+        case album
+    }
+    
+    
+    class Item: Hashable {
+        var uuid: UUID = UUID()
+        var albumTitle: String
+        var thumbnailAsset: PHAsset
+        var firstPhotoImage = UIImage()
+        var photoCount: Int = 0
+        
+        init(albumTitle: String, thumbnailAsset: PHAsset, photoCount: Int) {
+            self.albumTitle = albumTitle
+            self.thumbnailAsset = thumbnailAsset
+            self.firstPhotoImage = self.assetToImage()
+            self.photoCount = photoCount
+        }
+        
+        static func == (lhs: ViewController.Item, rhs: ViewController.Item) -> Bool {
+            lhs.uuid == rhs.uuid
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(uuid)
+        }
+        
+        func assetToImage() -> UIImage {
+            var thumbnailImage: UIImage = UIImage()
+            
+            photoInfo.shared.options.isSynchronous = true
+            photoInfo.shared.imageManager.requestImage(for: self.thumbnailAsset,
+                                      targetSize: PHImageManagerMaximumSize,
+                                      contentMode: .aspectFill,
+                                                       options: photoInfo.shared.options,
+                                                       resultHandler: {image, _ in thumbnailImage = image ?? UIImage()})
+            
+            return thumbnailImage
+        }
+    }
+    
+    
+    // 셀 형태(데이터 소스)
+    func setupDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, Item> (collectionView: self.collectionView_album,
+                                                                        cellProvider: {
+            (collectionView: UICollectionView, indexPath: IndexPath, item: Item) -> UICollectionViewCell? in
+            
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: self.cellIdentifier_album,
+                for: indexPath) as? albumCollectionViewCell else {
+                fatalError("Unable to dequeue AlbumCollectionViewCell")
+            }
+            
+            cell.updateImage(image: item.firstPhotoImage)
+            cell.updateText(title: item.albumTitle, count: item.photoCount)
+            
+            return cell
+        })
+    }
+    
+    
+    // 셀 내용(스냅샷)
+    func setupSnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        
+        snapshot.appendSections([.album])
+
+        snapshot.appendItems(albumsInfo)
+        
+        self.dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
     
     // 셀 크기 (기준: 아이폰se의 width)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -178,66 +305,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return CGSize(width: cellWidth, height: cellWidth + 40)
     }
     
-    // 셀 개수
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        for i in 1...allAlbums.count {
-            prefixSum.append(prefixSum[i-1] + allAlbums[i-1].count)
-        }
-        
-        return prefixSum[allAlbums.count]
-    }
     
-    // 셀 내용
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: self.cellIdentifier_album,
-            for: indexPath) as? albumCollectionViewCell else {
-            fatalError("Unable to dequeue AlbumCollectionViewCell")
-        }
-        
-        // 정렬
-        let sortDate = PHFetchOptions()
-        sortDate.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)] // 날짜 내림차순
-//        let sortTitle = PHFetchOptions()
-//        sortTitle.sortDescriptors = [NSSortDescriptor(key: "localizedTitle", ascending: false)] // 제목 내림차순
-        
-        let allAlbum = allAlbums[albumType][albumCnt] // albumType -> [0] = 최근, [1] = 좋아요, [2] 유저의 모든 앨범
-        let photoInAlbums = PHAsset.fetchAssets(in: allAlbum, options: sortDate)
-        var resultFirstPhoto:UIImage = UIImage()
-        
-        // 1. 하나의 앨범에 대해서 정보를 불러옴
-        if(photoInAlbums.firstObject != nil) {
-            guard let firstPhoto = photoInAlbums.firstObject else {
-                return cell
-            }
-            photoInfo.shared.options.isSynchronous = true
-            photoInfo.shared.imageManager.requestImage(for: firstPhoto,
-                                      targetSize: PHImageManagerMaximumSize,
-                                      contentMode: .aspectFill,
-                                      options: photoInfo.shared.options)
-            { (image, info) in resultFirstPhoto = image! } // 앨범 이미지
-        }
-        
-//        // 2. 각각의 모든 앨범에 대해서 정보를 불러옴 (1번과 결과는 같으나 지금 상황에서는 비효율적)
-//        allAlbums[albumType].enumerateObjects {(collection, index, object) in
-//            let photoInAlbum = PHAsset.fetchAssets(in: collection, options: nil)
-//            cell.label_albumCount.text = "\(photoInAlbum.count)"
-//        }
-        
-        cell.updateText(title: allAlbum.localizedTitle!, count: photoInAlbums.count)
-        cell.updateImage(image: resultFirstPhoto)
-        
-        albumCnt += 1
-        
-        if(allAlbums[albumType].count <= albumCnt) {
-            albumType += 1
-            albumCnt = 0
-        }
-                
-        return cell
-    }
-    
-    
+    // -----------------------------------------
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -255,15 +324,37 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return
         }
         
-        guard let index: IndexPath = self.collectionView_album.indexPath(for: cell) else {
+        guard let indexPath: IndexPath = self.collectionView_album.indexPath(for: cell) else {
             return
         }
         
-        let albumRow = albumRow(index: index.item)
-        let albumCol = albumCol(index: index.item, row: albumRow)
+        let row = albumRow(index: indexPath.item)
+        let col = albumCol(index: indexPath.item, row: row)
         
-        nextViewController.albumIndex = index.item
-        nextViewController.albumInCollection = allAlbums[albumRow][albumCol]
-        nextViewController.albumInTitle = allAlbums[albumRow][albumCol].localizedTitle ?? "" // 앨범 제목
+        nextViewController.albumIndexPath = indexPath
+        nextViewController.albumTitle = allAlbums[row][col].localizedTitle ?? "" // 앨범 제목
+        nextViewController.collectionAlbum = allAlbums[row][col]
+    }
+    
+    
+    // 앨범 내의 사진에서 변화가 발생하는 delegate
+    func reloadView(msg: String, indexPath: IndexPath) {
+        // 변화가 발생한 앨범 불러옴
+        let row: Int = albumRow(index: indexPath.item)
+        let col: Int = albumCol(index: indexPath.item, row: row)
+        let collectionInAlbum = PHAsset.fetchAssets(in: allAlbums[row][col], options: photoInfo.shared.sortOption)
+        
+        // refresh
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        item.thumbnailAsset = collectionInAlbum.firstObject ?? PHAsset()
+        item.firstPhotoImage = item.assetToImage()
+        item.photoCount = collectionInAlbum.count
+
+        // 단일 스냅샷
+        var snapshot = dataSource.snapshot()
+        snapshot.reloadItems([item])
+        dataSource.apply(snapshot, animatingDifferences: false)
+        
+        print(msg)
     }
 }
