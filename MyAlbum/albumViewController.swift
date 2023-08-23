@@ -8,7 +8,7 @@
 import UIKit
 import Photos
 
-class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, reloadDelegate {
+class albumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, reloadDelegate {
     
     private var allAlbums = [PHFetchResult<PHAssetCollection>]()
     
@@ -143,18 +143,13 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 
                 // 3. PHFetchResult<PHAsset> in PHAssetCollection
                 let collectionInAlbum = PHAsset.fetchAssets(in: album, options: photoInfo.shared.sortOption)
+
+                // 4. PHAsset in PHFetchResult<PHAsset>
+                let firstPhoto = collectionInAlbum.firstObject ?? PHAsset()
                 
-                if(collectionInAlbum.firstObject != nil) {
-                    
-                    // 4. PHAsset in PHFetchResult<PHAsset>
-                    guard let firstPhoto = collectionInAlbum.firstObject else {
-                        return
-                    }
-                    
-                    self.albumsInfo.append(Item(albumTitle: album.localizedTitle ?? "",
-                                                thumbnailAsset: firstPhoto,
-                                                photoCount: collectionInAlbum.count))
-                }
+                self.albumsInfo.append(Item(albumTitle: album.localizedTitle ?? "",
+                                            thumbnailAsset: firstPhoto,
+                                            photoCount: collectionInAlbum.count))
             }
         }
     }
@@ -229,37 +224,24 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     class Item: Hashable {
         var uuid: UUID = UUID()
-        var albumTitle: String
-        var thumbnailAsset: PHAsset
+        var albumTitle: String = ""
+        var thumbnailAsset: PHAsset = PHAsset()
         var firstPhotoImage = UIImage()
         var photoCount: Int = 0
         
         init(albumTitle: String, thumbnailAsset: PHAsset, photoCount: Int) {
             self.albumTitle = albumTitle
             self.thumbnailAsset = thumbnailAsset
-            self.firstPhotoImage = self.assetToImage()
+            self.firstPhotoImage = photoInfo.shared.assetToImage(asset: thumbnailAsset)
             self.photoCount = photoCount
         }
         
-        static func == (lhs: ViewController.Item, rhs: ViewController.Item) -> Bool {
+        static func == (lhs: albumViewController.Item, rhs: albumViewController.Item) -> Bool {
             lhs.uuid == rhs.uuid
         }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(uuid)
-        }
-        
-        func assetToImage() -> UIImage {
-            var thumbnailImage: UIImage = UIImage()
-            
-            photoInfo.shared.options.isSynchronous = true
-            photoInfo.shared.imageManager.requestImage(for: self.thumbnailAsset,
-                                      targetSize: PHImageManagerMaximumSize,
-                                      contentMode: .aspectFill,
-                                                       options: photoInfo.shared.options,
-                                                       resultHandler: {image, _ in thumbnailImage = image ?? UIImage()})
-            
-            return thumbnailImage
         }
     }
     
@@ -314,11 +296,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
         
-        guard let nextViewController: photoViewController = segue.destination as? photoViewController else {
+        guard let nextVC: photoViewController = segue.destination as? photoViewController else {
             return
         }
         
-        nextViewController.photoViewDelegate = self
+        nextVC.photoViewDelegate = self
         
         guard let cell: UICollectionViewCell = sender as? UICollectionViewCell else {
             return
@@ -331,9 +313,9 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let row = albumRow(index: indexPath.item)
         let col = albumCol(index: indexPath.item, row: row)
         
-        nextViewController.albumIndexPath = indexPath
-        nextViewController.albumTitle = allAlbums[row][col].localizedTitle ?? "" // 앨범 제목
-        nextViewController.collectionAlbum = allAlbums[row][col]
+        nextVC.albumIndexPath = indexPath
+        nextVC.albumTitle = allAlbums[row][col].localizedTitle ?? "" // 앨범 제목
+        nextVC.collectionAlbum = allAlbums[row][col]
     }
     
     
@@ -347,7 +329,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         // refresh
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         item.thumbnailAsset = collectionInAlbum.firstObject ?? PHAsset()
-        item.firstPhotoImage = item.assetToImage()
+        item.firstPhotoImage = photoInfo.shared.assetToImage(asset: item.thumbnailAsset)
         item.photoCount = collectionInAlbum.count
 
         // 단일 스냅샷

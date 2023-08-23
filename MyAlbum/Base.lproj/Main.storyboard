@@ -42,7 +42,7 @@
         <!--앨범-->
         <scene sceneID="F1Y-Be-5h6">
             <objects>
-                <viewController storyboardIdentifier="ViewController" id="cC8-Zs-VH3" customClass="ViewController" customModule="MyAlbum" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" id="cC8-Zs-VH3" customClass="albumViewController" customModule="MyAlbum" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="R54-0i-IVV">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -102,10 +102,6 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="cC8-Zs-VH3" id="a2V-6K-YUq"/>
-                                    <outlet property="delegate" destination="cC8-Zs-VH3" id="VLb-Ln-gKf"/>
-                                </connections>
                             </collectionView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="W5V-px-lhG"/>
@@ -119,7 +115,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="앨범" id="aJL-2g-6i2"/>
                     <connections>
-                        <outlet property="collectionView_album" destination="jLH-bo-kwA" id="Ips-Cd-tFa"/>
+                        <outlet property="collectionView_album" destination="jLH-bo-kwA" id="WJP-I5-kGO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="biv-kn-Hb8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -168,6 +164,7 @@
                                         </collectionViewCellContentView>
                                         <connections>
                                             <outlet property="imageView_photo" destination="FSP-xy-1lP" id="Oza-l1-KKN"/>
+                                            <segue destination="WAq-fc-jZT" kind="show" identifier="singlePhotoSegue" id="xqm-TX-sBJ"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -236,6 +233,72 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S8y-vd-fDe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3393.75" y="-2.112676056338028"/>
+        </scene>
+        <!--Single Photo View Controller-->
+        <scene sceneID="HXW-v7-JLm">
+            <objects>
+                <viewController id="WAq-fc-jZT" customClass="singlePhotoViewController" customModule="MyAlbum" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="yNX-lQ-EH3">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="s3K-qG-WLo">
+                                <rect key="frame" x="0.0" y="64" width="320" height="460"/>
+                            </imageView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EgF-00-YZ2">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="0U5-o0-f00"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem id="ivy-km-LRd">
+                                        <nil key="title"/>
+                                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="DOb-ue-T4X">
+                                            <connections>
+                                                <action selector="touchUpShareButton:" destination="WAq-fc-jZT" id="sqs-IX-A9u"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="xfC-rj-SU5">
+                                            <rect key="frame" x="96" y="5" width="128" height="34.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain"/>
+                                            <connections>
+                                                <action selector="touchUpFavoriteButton:" destination="WAq-fc-jZT" eventType="touchUpInside" id="z9v-iN-3F0"/>
+                                            </connections>
+                                        </button>
+                                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="BOv-H4-KuF">
+                                            <connections>
+                                                <action selector="touchUpDeleteButton:" destination="WAq-fc-jZT" id="xub-rc-P5y"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="y7h-c1-teo"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="EgF-00-YZ2" firstAttribute="bottom" secondItem="y7h-c1-teo" secondAttribute="bottom" id="3jz-ve-MUY"/>
+                            <constraint firstItem="EgF-00-YZ2" firstAttribute="trailing" secondItem="y7h-c1-teo" secondAttribute="trailing" id="FbJ-Tj-uU1"/>
+                            <constraint firstItem="s3K-qG-WLo" firstAttribute="top" secondItem="y7h-c1-teo" secondAttribute="top" id="N2P-Y3-fvB"/>
+                            <constraint firstItem="y7h-c1-teo" firstAttribute="trailing" secondItem="s3K-qG-WLo" secondAttribute="trailing" id="PnU-TQ-j6k"/>
+                            <constraint firstItem="EgF-00-YZ2" firstAttribute="leading" secondItem="y7h-c1-teo" secondAttribute="leading" id="gGS-g3-KVb"/>
+                            <constraint firstItem="s3K-qG-WLo" firstAttribute="leading" secondItem="y7h-c1-teo" secondAttribute="leading" id="ngE-Mx-jZH"/>
+                            <constraint firstItem="EgF-00-YZ2" firstAttribute="top" secondItem="s3K-qG-WLo" secondAttribute="bottom" id="xCH-6D-LIB"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="RIc-fw-vbR"/>
+                    <connections>
+                        <outlet property="deleteButton" destination="BOv-H4-KuF" id="izT-wv-KA0"/>
+                        <outlet property="favoriteButton" destination="xfC-rj-SU5" id="IAh-9X-75u"/>
+                        <outlet property="imageView" destination="s3K-qG-WLo" id="VHw-zU-jGO"/>
+                        <outlet property="shareButton" destination="DOb-ue-T4X" id="ORH-AD-wiF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0z2-ax-lAm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4151" y="-2"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Unq-ZE-l29">

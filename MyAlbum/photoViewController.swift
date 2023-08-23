@@ -22,7 +22,7 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
     var albumIndexPath: IndexPath = IndexPath()
     
     var albumInImages: [Item] = []
-    var albumInPhotos : PHFetchResult<PHAsset>!
+    var albumInPhotos : PHFetchResult<PHAsset> = PHFetchResult<PHAsset>()
     var collectionAlbum: PHAssetCollection!
     
     let cellIdentifier_photos: String = "cell"
@@ -113,15 +113,8 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
     @IBAction func touchUpShareButton(_ sender: UIBarButtonItem) {
         var sharePhotos = [UIImage]()
         
-        photoInfo.shared.options.deliveryMode = .highQualityFormat
-        photoInfo.shared.options.isSynchronous = true
-        
         for item in selectPhotos {
-            photoInfo.shared.imageManager.requestImage(for: item.asset,
-                                                       targetSize: PHImageManagerMaximumSize,
-                                                       contentMode: .aspectFit,
-                                                       options: photoInfo.shared.options)
-            { (image, info) in sharePhotos.append(image!) }
+            sharePhotos.append(photoInfo.shared.assetToImage(asset: item.asset))
         }
         
         let activityViewController = UIActivityViewController(activityItems: sharePhotos, applicationActivities: nil)
@@ -227,6 +220,7 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
         self.photoViewDelegate?.reloadView(msg: "앨범 내 사진 추가 또는 삭제 발생", indexPath: albumIndexPath)
         
         self.setupPhotos(state: self.sortStatus)
+        
         self.setupSnapshot()
     }
     
@@ -235,6 +229,7 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
     // MARK: - 컬렉션 뷰
     
     var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
+    
     
     enum Section: CaseIterable {
         case album
@@ -248,7 +243,7 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
         var onSelected: Bool = false
         init(asset: PHAsset) {
             self.asset = asset
-            self.image = self.assetToImage()
+            self.image = photoInfo.shared.assetToImage(asset: self.asset)
         }
         
         static func == (lhs: photoViewController.Item, rhs: photoViewController.Item) -> Bool {
@@ -257,19 +252,6 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(uuid)
-        }
-        
-        func assetToImage() -> UIImage {
-            var transImage: UIImage = UIImage()
-            
-            photoInfo.shared.options.isSynchronous = true
-            photoInfo.shared.imageManager.requestImage(for: self.asset,
-                                      targetSize: PHImageManagerMaximumSize,
-                                      contentMode: .aspectFill,
-                                                       options: photoInfo.shared.options,
-                                                       resultHandler: {image, _ in transImage = image ?? UIImage()})
-            
-            return transImage
         }
     }
     
@@ -318,8 +300,8 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
     
     // 셀 선택 딜리게이트
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // 사진 선택 중...
         if(multiSelectStatus) {
-            
             // 선택된 셀의 상태를 변경하고 스냅샷에 전달
             guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
             item.onSelected.toggle()
@@ -360,6 +342,48 @@ class photoViewController: UIViewController, UICollectionViewDelegateFlowLayout,
             default:
                 return
             }
+        }
+    }
+    
+    
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+        
+        guard let nextVC: singlePhotoViewController = segue.destination as? singlePhotoViewController else {
+            return
+        }
+        
+        guard let cell: UICollectionViewCell = sender as? UICollectionViewCell else {
+            return
+        }
+        
+        guard let indexPath: IndexPath = self.collectionView_photo.indexPath(for: cell) else {
+            return
+        }
+        
+        guard let item = dataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+        
+        nextVC.singlePhotoAsset = item.asset
+    }
+    
+    
+    // 다중 선택 상태에 따라 segue
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if(identifier == "singlePhotoSegue") {
+            if(multiSelectStatus) {
+                return false
+            } else {
+                return true
+            }
+        }
+        else {
+            return false
         }
     }
 }
