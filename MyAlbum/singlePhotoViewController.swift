@@ -9,18 +9,12 @@ import UIKit
 import Photos
 
 class singlePhotoViewController: UIViewController {
-
-    
-    //    사진 확대/축소 기능
-    //    사진을 핀치 제스쳐를 사용하여 확대/축소할 수 있습니다.
-    //    사진을 터치하거나 확대/축소하면 툴바와 내비게이션바가 사라집니다.
-    //    다시 사진을 터치하면 툴바와 내비게이션바가 나타납니다.
-    
     
     var singlePhotoImage: UIImage = UIImage()
     var singlePhotoAsset: PHAsset = PHAsset()
+    @IBOutlet weak var singlePhotoImageView: UIImageView!
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var bottomNavigationBar: UINavigationBar!
     
     var photoCreationDate: Date = Date()
     
@@ -43,6 +37,81 @@ class singlePhotoViewController: UIViewController {
         
         return formatter
     }()
+    
+    
+    // -----------------------------------------
+    // MARK: - 사진 확대/축소
+    
+    var pinchState: Bool = false
+    
+    // 상태바 배경색깔
+    var statusBarView: UIView? {
+        if #available(iOS 13.0, *) {
+            let statusBarFrame = UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame
+            if let statusBarFrame = statusBarFrame {
+                let statusBar = UIView(frame: statusBarFrame)
+                view.addSubview(statusBar)
+                return statusBar
+            } else {
+                return nil
+            }
+        } else {
+            return UIApplication.shared.value(forKey: "statusBar") as? UIView
+        }
+    }
+    
+    @objc func imageViewTap(_ gesture: UITapGestureRecognizer) {
+        pinchState.toggle()
+        
+        if(pinchState == true) {
+            view.backgroundColor = .black
+            statusBarView?.backgroundColor = .black
+            self.navigationController?.navigationBar.backgroundColor = nil
+            self.navigationItem.titleView?.isHidden = true
+            self.navigationItem.hidesBackButton = true
+            self.bottomNavigationBar.isHidden = true
+        }
+        else {
+            view.backgroundColor = .white
+            statusBarView?.backgroundColor = .white
+            self.navigationController?.navigationBar.backgroundColor = .white
+            self.navigationItem.titleView?.isHidden = false
+            self.navigationItem.hidesBackButton = false
+            self.bottomNavigationBar.isHidden = false
+        }
+    }
+    
+    let minScale: CGFloat = 0.3
+    let maxScale: CGFloat = 4.0
+    @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {
+        if(gesture.state == .changed && !pinchState) {
+            pinchState = true
+            
+            view.backgroundColor = .black
+            statusBarView?.backgroundColor = .black
+            self.navigationController?.navigationBar.backgroundColor = nil
+            self.navigationItem.titleView?.isHidden = true
+            self.navigationItem.hidesBackButton = true
+            self.bottomNavigationBar.isHidden = true
+        }
+        
+        if let view = gesture.view {
+            let currentScale = view.frame.size.width / view.bounds.size.width
+            var newScale = currentScale * gesture.scale
+            
+            if newScale > maxScale {
+                newScale = maxScale
+            }
+            
+            if(newScale < minScale) {
+                newScale = minScale
+            }
+            
+            let transform = CGAffineTransform(scaleX: newScale, y: newScale)
+            view.transform = transform
+            gesture.scale = 1
+        }
+    }
     
     
     // -----------------------------------------
@@ -110,14 +179,30 @@ class singlePhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // 네비게이션 아이템의 타이틀은 이전 화면에서 선택된 사진 생성 일자 및 시각입니다.
+        // 네비게이션 바를 상위에 배치
+        view.bringSubviewToFront(bottomNavigationBar)
+        
+        
+        // 네비게이션 타이틀을 생성 일자 및 시각로 설정
         photoCreationDate = self.singlePhotoAsset.creationDate ?? Date()
         self.navigationItem.titleView = dateTitle()
         
         
         // 단일 사진
         singlePhotoImage = photoInfo.shared.assetToImage(asset: singlePhotoAsset)
-        self.imageView.image = singlePhotoImage
+        self.singlePhotoImageView.image = singlePhotoImage
+        
+        
+        // 화면(이미지) 탭 했을 때 발생
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTap))
+        singlePhotoImageView.addGestureRecognizer(tapGesture)
+        singlePhotoImageView.isUserInteractionEnabled = true
+        
+        
+        // 핀치 제스처로 사진 확대 및 축소
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(singlePhotoViewController.handlePinch(_:)))
+        self.singlePhotoImageView.addGestureRecognizer(pinchGesture) // 핀치 제스처 등록
+        self.singlePhotoImageView.isUserInteractionEnabled = true // 사용자의 터치, 프레스, 키보드 및 포커스 이벤트를 받아들이도록 설정
         
         
         // 좋아요 상태

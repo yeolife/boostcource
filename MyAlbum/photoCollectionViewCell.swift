@@ -8,18 +8,18 @@
 import UIKit
 
 class photoCollectionViewCell: UICollectionViewCell {
-    @IBOutlet var imageView_photo: UIImageView!
+    @IBOutlet var photoImageView: UIImageView!
     
     func clickImageView(state: Bool) {
         if(state) {
-            self.imageView_photo.alpha = 0.7
-            self.imageView_photo.layer.borderColor = UIColor.systemBlue.cgColor
-            self.imageView_photo.layer.borderWidth = 2
+            self.photoImageView.layer.opacity = 0.7
+            self.photoImageView.layer.borderColor = UIColor.systemBlue.cgColor
+            self.photoImageView.layer.borderWidth = 2
         }
         else {
-            self.imageView_photo.alpha = 1.0
-            self.imageView_photo.layer.borderColor = .none
-            self.imageView_photo.layer.borderWidth = .zero
+            self.photoImageView.layer.opacity = 1.0
+            self.photoImageView.layer.borderColor = .none
+            self.photoImageView.layer.borderWidth = .zero
         }
     }
 }

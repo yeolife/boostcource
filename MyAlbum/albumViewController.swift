@@ -8,13 +8,13 @@
 import UIKit
 import Photos
 
-class albumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, reloadDelegate {
+class albumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, PHPhotoLibraryChangeObserver {
+ 
+    private var albumCollection = [PHFetchResult<PHAssetCollection>]()
     
-    private var allAlbums = [PHFetchResult<PHAssetCollection>]()
+    @IBOutlet weak var albumCollectionView: UICollectionView!
     
-    @IBOutlet weak var collectionView_album: UICollectionView!
-    
-    let cellIdentifier_album: String = "cell"
+    let albumCellIdentifier: String = "cell"
     
     
     // -----------------------------------------
@@ -23,19 +23,17 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
     override func viewDidLoad() {
         super.viewDidLoad()
                 
-        self.collectionView_album.delegate = self
+        self.albumCollectionView.delegate = self
         
         setupLayout()
         
         checkAuthorization()
-        
-        setupAlbums()
-        
-        setupAlbumIndexArray()
-        
+                        
         setupDataSource()
         
         setupSnapshot()
+        
+        PHPhotoLibrary.shared().register(self)
     }
     
     
@@ -46,7 +44,7 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
         flowLayout.minimumLineSpacing = 10
         flowLayout.minimumInteritemSpacing = 10
         
-        self.collectionView_album.collectionViewLayout = flowLayout
+        self.albumCollectionView.collectionViewLayout = flowLayout
     }
     
     
@@ -74,7 +72,7 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
                     self.requestCollection()
                     
                     OperationQueue.main.addOperation { // reload는 메인 스레드에서만 동작
-                        self.collectionView_album.reloadData()
+                        self.albumCollectionView.reloadData()
                     }
                     
                 case .denied:
@@ -124,96 +122,70 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         for i in 0..<smartAlbumType.count {
             let smartAlbum = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: smartAlbumType[i], options: nil)
-            allAlbums.append(smartAlbum)
+            albumCollection.append(smartAlbum)
         }
         
-        allAlbums.append(PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)) // 유저의 모든 앨범
+        let userAlbum = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
+        albumCollection.append(userAlbum) // 유저의 모든 앨범
     }
     
     
     // 3. 선정한 앨범 컬렉션의 정보를 전처리
-    func setupAlbums() {
-        // 1. PHFetchResult<PHAssetCollection> in [PHFetchResult<PHAssetCollection>]
-        for allAlbum in allAlbums {
+    func setupAlbums() -> [Item] {
+        var albumItem: [Item] = []
+        
+        // PHFetchResult<PHAssetCollection> in [PHFetchResult<PHAssetCollection>]
+        for collection in albumCollection {
             
-            // 2. PHAssetCollection in PHFetchResult<PHAssetCollection>
-            allAlbum.enumerateObjects { album, _, _ in
-                
-                photoInfo.shared.sortDate(state: false)
-                
-                // 3. PHFetchResult<PHAsset> in PHAssetCollection
-                let collectionInAlbum = PHAsset.fetchAssets(in: album, options: photoInfo.shared.sortOption)
-
-                // 4. PHAsset in PHFetchResult<PHAsset>
-                let firstPhoto = collectionInAlbum.firstObject ?? PHAsset()
-                
-                self.albumsInfo.append(Item(albumTitle: album.localizedTitle ?? "",
-                                            thumbnailAsset: firstPhoto,
-                                            photoCount: collectionInAlbum.count))
+            // PHAssetCollection in PHFetchResult<PHAssetCollection>
+            collection.enumerateObjects { album, _, _ in
+                albumItem.append(Item(albumCollection: album))
             }
         }
+        
+        return albumItem
     }
     
     
     // -----------------------------------------
-    // MARK: - PHFetchResult 안에서 앨범의 순번을 찾기 위한 함수들
-    
-    var albumType: Int = 0 // row
-    var albumCnt: Int = 0 // col
-    var prefixSum: [Int] = [0, ] // 다음 뷰로 넘길 셀의 위치(indexPath.item)를 반환
+    // MARK: - 앨범 변화 감지 옵저버
     
     
-    func setupAlbumIndexArray() {
-        for i in 1...allAlbums.count {
-            prefixSum.append(prefixSum[i-1] + allAlbums[i-1].count)
-        }
-    }
-    
-    
-    /* 2차원 앨범 셀의 row 찾기 */
-    // 누적합 배열에서 현재 순번의 upperBound를 찾으면 됨
-    // 찾은 후에 누적합 배열은 1번 인덱스부터 시작하므로 -1
-    func albumRow(index: Int) -> Int {
-        let row: Int = upperBounds(target: index) - 1
+    // 실제 사진첩에서 앨범의 개수가 변화하면 발생
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        // 모든 앨범 스냅샷
+        var snapshot = dataSource.snapshot()
         
-        return row
-    }
-    
-    /* 2차원 앨범 셀의 col 찾기 */
-    // 현재 1차원 순번에 이전 원소들의 합을 빼면 2차원 col을 알 수 있음
-    // col = 현재 셀 순번 - 이전 원소 누적합
-    func albumCol(index: Int, row: Int) -> Int {
-        let col: Int = index - prefixSum[row]
+        let fetch = snapshot.itemIdentifiers(inSection: .album)
         
-        return col
-    }
-    
-    
-    func upperBounds(target: Int) -> Int {
-        var lo: Int = 0
-        var hi: Int = prefixSum.count
-        
-        var mid: Int
-        
-        while(lo + 1 < hi) {
-            mid = (lo + hi) / 2
-            
-            if(prefixSum[mid] <= target) {
-                lo = mid
-            }
-            else {
-                hi = mid
-            }
+        for fetchResult in fetch {
+            fetchResult.thumbnailInfo()
         }
         
-        return hi
+        snapshot.reloadItems(fetch)
+        
+        self.dataSource.apply(snapshot, animatingDifferences: false)
+        
+        
+        // 단일 앨범 스냅샷
+//        let snapshot = dataSource.snapshot()
+//
+//        let items = snapshot.itemIdentifiers(inSection: .album)
+//
+//        if let item = items.first(where: { $0.uuid == uuid }) {
+//            item.thumbnailInfo()
+//
+//            var snapshot = dataSource.snapshot()
+//            snapshot.reloadItems([item])
+//            dataSource.apply(snapshot, animatingDifferences: false)
+//        }
     }
 
     
     // -----------------------------------------
     // MARK: - 컬렉션 뷰
     
-    var albumsInfo: [Item] = []
+    
     var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
 
     
@@ -224,16 +196,17 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
     
     class Item: Hashable {
         var uuid: UUID = UUID()
-        var albumTitle: String = ""
-        var thumbnailAsset: PHAsset = PHAsset()
-        var firstPhotoImage = UIImage()
-        var photoCount: Int = 0
         
-        init(albumTitle: String, thumbnailAsset: PHAsset, photoCount: Int) {
-            self.albumTitle = albumTitle
-            self.thumbnailAsset = thumbnailAsset
-            self.firstPhotoImage = photoInfo.shared.assetToImage(asset: thumbnailAsset)
-            self.photoCount = photoCount
+        var albumCollection: PHAssetCollection = PHAssetCollection()
+        
+        var firstPhotoImage = UIImage()
+        var albumTitle: String = ""
+        var albumCount: Int = 0
+
+        init(albumCollection: PHAssetCollection) {
+            self.albumCollection = albumCollection
+            self.albumTitle = self.albumCollection.localizedTitle ?? ""
+            self.thumbnailInfo()
         }
         
         static func == (lhs: albumViewController.Item, rhs: albumViewController.Item) -> Bool {
@@ -243,23 +216,38 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
         func hash(into hasher: inout Hasher) {
             hasher.combine(uuid)
         }
+        
+        func thumbnailInfo() {
+            photoInfo.shared.sortDate(state: false)
+            
+            // PHFetchResult<PHAsset> in PHCollection
+            let assetInCollection = PHAsset.fetchAssets(in: self.albumCollection,
+                                                        options: photoInfo.shared.sortOption)
+            
+            // PHAsset in PHFetchResult<PHAsset>
+            let firstAsset = assetInCollection.firstObject ?? PHAsset()
+            
+            self.firstPhotoImage = photoInfo.shared.assetToImage(asset: firstAsset)
+            self.albumCount = assetInCollection.count
+        }
     }
     
     
     // 셀 형태(데이터 소스)
     func setupDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, Item> (collectionView: self.collectionView_album,
+        dataSource = UICollectionViewDiffableDataSource<Section, Item> (collectionView: self.albumCollectionView,
                                                                         cellProvider: {
             (collectionView: UICollectionView, indexPath: IndexPath, item: Item) -> UICollectionViewCell? in
             
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: self.cellIdentifier_album,
+                withReuseIdentifier: self.albumCellIdentifier,
                 for: indexPath) as? albumCollectionViewCell else {
                 fatalError("Unable to dequeue AlbumCollectionViewCell")
             }
             
             cell.updateImage(image: item.firstPhotoImage)
-            cell.updateText(title: item.albumTitle, count: item.photoCount)
+            cell.updateTitle(title: item.albumTitle)
+            cell.updateCount(count: item.albumCount)
             
             return cell
         })
@@ -272,7 +260,7 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
         
         snapshot.appendSections([.album])
 
-        snapshot.appendItems(albumsInfo)
+        snapshot.appendItems(setupAlbums())
         
         self.dataSource.apply(snapshot, animatingDifferences: true)
     }
@@ -299,44 +287,19 @@ class albumViewController: UIViewController, UICollectionViewDelegate, UICollect
         guard let nextVC: photoViewController = segue.destination as? photoViewController else {
             return
         }
-        
-        nextVC.photoViewDelegate = self
-        
+                
         guard let cell: UICollectionViewCell = sender as? UICollectionViewCell else {
             return
         }
         
-        guard let indexPath: IndexPath = self.collectionView_album.indexPath(for: cell) else {
+        guard let indexPath: IndexPath = self.albumCollectionView.indexPath(for: cell) else {
             return
         }
         
-        let row = albumRow(index: indexPath.item)
-        let col = albumCol(index: indexPath.item, row: row)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
         
-        nextVC.albumIndexPath = indexPath
-        nextVC.albumTitle = allAlbums[row][col].localizedTitle ?? "" // 앨범 제목
-        nextVC.collectionAlbum = allAlbums[row][col]
-    }
-    
-    
-    // 앨범 내의 사진에서 변화가 발생하는 delegate
-    func reloadView(msg: String, indexPath: IndexPath) {
-        // 변화가 발생한 앨범 불러옴
-        let row: Int = albumRow(index: indexPath.item)
-        let col: Int = albumCol(index: indexPath.item, row: row)
-        let collectionInAlbum = PHAsset.fetchAssets(in: allAlbums[row][col], options: photoInfo.shared.sortOption)
-        
-        // refresh
-        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-        item.thumbnailAsset = collectionInAlbum.firstObject ?? PHAsset()
-        item.firstPhotoImage = photoInfo.shared.assetToImage(asset: item.thumbnailAsset)
-        item.photoCount = collectionInAlbum.count
-
-        // 단일 스냅샷
-        var snapshot = dataSource.snapshot()
-        snapshot.reloadItems([item])
-        dataSource.apply(snapshot, animatingDifferences: false)
-        
-        print(msg)
+        nextVC.albumCollection = item.albumCollection
     }
 }

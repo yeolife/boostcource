@@ -8,16 +8,20 @@
 import UIKit
 
 class albumCollectionViewCell: UICollectionViewCell {
-    @IBOutlet var imageView_album: UIImageView!
-    @IBOutlet var label_albumName: UILabel!
-    @IBOutlet var label_albumCount: UILabel!
-    
-    func updateText(title: String, count: Int) {
-        self.label_albumName.text = title
-        self.label_albumCount.text = "\(count)"
-    }
+    @IBOutlet var albumImageView: UIImageView!
+    @IBOutlet var albumTitleLabel: UILabel!
+    @IBOutlet var albumCountLabel: UILabel!
     
     func updateImage(image: UIImage) {
-        self.imageView_album.image = image
+        self.albumImageView.image = image
+    }
+    
+    func updateTitle(title: String) {
+        self.albumTitleLabel.text = title
+        
+    }
+    
+    func updateCount(count: Int) {
+        self.albumCountLabel.text = "\(count)"
     }
 }
